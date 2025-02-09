@@ -61,13 +61,6 @@ public class FeetPlace extends Module {
         .defaultValue(false)
         .build()
     );
-    private final Setting<Boolean> turnOffTheBugHint = sgGeneral.add(new BoolSetting.Builder()
-        .name("turn-off-bug-hint")
-        .description("Turn off the bug hint")
-        .defaultValue(true)
-        .build()
-    );
-
     private Queue<BlockPos> placeQueue = new LinkedList<>();
     private int timer = 0;
     private BlockPos centerPos;
@@ -79,9 +72,6 @@ public class FeetPlace extends Module {
 
     @Override
     public void onActivate() {
-        if (turnOffTheBugHint.get()) {
-            warning("目前此模块还有小问题，使用时出现的问题在修复前开发者概不负责");
-        }
         centerPos = Objects.requireNonNull(mc.player).getBlockPos();
         generatePositions();
         timer = delay.get();
