@@ -74,7 +74,12 @@ public class Surround extends Module {
         .defaultValue(false)
         .build()
     );
-
+    private final Setting<Boolean> doubleWidth = sgGeneral.add(new BoolSetting.Builder()
+       .name("double-width")
+       .description("Places obsidian on both sides of the original surround blocks to prevent people from face-placing you.")
+       .defaultValue(false)
+       .build()
+    );
     private final Setting<Boolean> onlyOnGround = sgGeneral.add(new BoolSetting.Builder()
         .name("only-on-ground")
         .description("Works only when you are standing on blocks.")
@@ -344,10 +349,18 @@ public class Surround extends Module {
         if (!complete && center.get() == Center.Incomplete) PlayerUtils.centerPlayer();
     }
 
+    /**
+     * 尝试在指定方向和高度放置方块
+     *
+     * @param direction 放置方块的方向
+     * @param y         放置方块的高度
+     * @return 如果方块成功放置，返回true，否则返回false
+     */
     private boolean place(CardinalDirection direction, int y) {
+        // 设置放置方块的位置
         placePos.set(offsetPosFromPlayer(direction, y));
 
-        // Attempt to place
+        // 尝试放置方块
         boolean placed = BlockUtils.place(
             placePos,
             getInvBlock(),
@@ -357,7 +370,7 @@ public class Surround extends Module {
             true
         );
 
-        // Check if the block is being mined
+        // 检查方块是否正在被挖掘
         boolean beingMined = false;
         for (BlockBreakingInfo value : ((WorldRendererAccessor) mc.worldRenderer).getBlockBreakingInfos().values()) {
             if (value.getPos().equals(placePos)) {
@@ -366,33 +379,42 @@ public class Surround extends Module {
             }
         }
 
+        // 检查方块是否是空气或正在被挖掘
         boolean isThreat = mc.world.getBlockState(placePos).isReplaceable() || beingMined;
 
-        // If the block is air or is being mined, destroy nearby crystals to be safe
+        // 如果方块是空气或正在被挖掘，并且保护设置为true，尝试破坏附近的末影水晶
         if (protect.get() && !placed && isThreat) {
+            // 创建一个包围放置位置的盒子
             Box box = new Box(
                 placePos.getX() - 1, placePos.getY() - 1, placePos.getZ() - 1,
                 placePos.getX() + 1, placePos.getY() + 1, placePos.getZ() + 1
             );
 
+            // 创建一个实体过滤器，只选择末影水晶并且对玩家造成的伤害小于玩家的总生命值
             Predicate<Entity> entityPredicate = entity -> entity instanceof EndCrystalEntity && DamageUtils.crystalDamage(mc.player, entity.getPos()) < PlayerUtils.getTotalHealth();
 
+            // 遍历盒子内的所有实体，尝试破坏符合条件的末影水晶
             for (Entity crystal : mc.world.getOtherEntities(null, box, entityPredicate)) {
+                // 如果旋转设置为true，旋转玩家视角以面向末影水晶
                 if (rotate.get()) {
                     Rotations.rotate(Rotations.getPitch(crystal), Rotations.getYaw(crystal), () -> {
+                        // 发送攻击末影水晶的数据包
                         mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(crystal, mc.player.isSneaking()));
                     });
-                }
-                else {
+                } else {
+                    // 发送攻击末影水晶的数据包
                     mc.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(crystal, mc.player.isSneaking()));
                 }
 
+                // 发送玩家手部摆动的数据包
                 mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
             }
         }
 
+        // 返回方块是否成功放置
         return placed;
     }
+
 
     @EventHandler
     private void onPacketReceive(PacketEvent.Receive event)  {

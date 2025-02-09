@@ -17,7 +17,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 
-public class AutoScaffolding extends Module {
+public class AutoLadder extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
@@ -38,22 +38,22 @@ public class AutoScaffolding extends Module {
 
     private final Setting<Boolean> doubles = sgGeneral.add(new BoolSetting.Builder()
         .name("doubles")
-        .description("Places scaffoldings in the target's upper hitbox as well as the lower hitbox.")
+        .description("Places ladders in the target's upper hitbox as well as the lower hitbox.")
         .defaultValue(true)
         .build()
     );
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
         .name("rotate")
-        .description("Rotates towards the scaffoldings when placing.")
+        .description("Rotates towards the ladders when placing.")
         .defaultValue(true)
         .build()
     );
 
     private PlayerEntity target = null;
 
-    public AutoScaffolding() {
-        super(Categories.Combat, "auto-scaffolding", "Automatically places scaffoldings on other players to block their phase. ^w^.");
+    public AutoLadder() {
+        super(Categories.Combat, "auto-ladder", "Automatically places ladder on other players to block their phase. ^w^.");
     }
 
     @EventHandler
@@ -63,10 +63,10 @@ public class AutoScaffolding extends Module {
             if (TargetUtils.isBadTarget(target, range.get())) return;
         }
 
-        BlockUtils.place(target.getBlockPos(), InvUtils.findInHotbar(Items.SCAFFOLDING), rotate.get(), 0, false);
+        BlockUtils.place(target.getBlockPos(), InvUtils.findInHotbar(Items.LADDER), rotate.get(), 0, false);
 
         if (doubles.get()) {
-            BlockUtils.place(target.getBlockPos().add(0, 1, 0), InvUtils.findInHotbar(Items.SCAFFOLDING), rotate.get(), 0, false);
+            BlockUtils.place(target.getBlockPos().add(0, 1, 0), InvUtils.findInHotbar(Items.LADDER), rotate.get(), 0, false);
         }
     }
 }

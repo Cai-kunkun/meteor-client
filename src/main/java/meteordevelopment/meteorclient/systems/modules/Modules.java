@@ -414,6 +414,8 @@ public class Modules extends System<Modules> {
         add(new AutoArmor());
         add(new AutoCity());
         add(new AutoEXP());
+        add(new AutoFrame());
+        add(new AutoLadder());
         add(new AutoScaffolding());
         add(new AutoTotem());
         add(new AutoTrap());
@@ -425,6 +427,7 @@ public class Modules extends System<Modules> {
         add(new Burrow());
         add(new Criticals());
         add(new CrystalAura());
+        add(new FeetPlace());
         add(new Hitboxes());
         add(new HoleFiller());
         add(new KillAura());

@@ -1,13 +1,14 @@
 {
   "schemaVersion": 1,
-  "name": "Meteor Client",
+  "name": "[arr]Meteor",
   "id": "meteor-client",
   "version": "${version}",
   "description": "Based utility mod.",
   "authors": [
     "MineGame159",
     "squidoodly",
-    "seasnail"
+    "seasnail",
+    "ArrBrants"
   ],
   "contact": {
     "homepage": "https://meteorclient.com",
@@ -34,7 +35,7 @@
   "accessWidener": "meteor-client.accesswidener",
   "custom": {
     "meteor-client:devbuild": "${devbuild}",
-    "meteor-client:color": "145,61,226",
+    "meteor-client:color": "141,238,238",
     "meteor-client:commit": "${commit}",
     "modmenu": {
       "links": {
@@ -51,7 +52,6 @@
     "optifabric": "*",
     "feather": "*",
     "origins": "*",
-    "wurst": "*",
     "sodium": "<0.6.0-beta.2",
     "morechathistory": "*"
   }

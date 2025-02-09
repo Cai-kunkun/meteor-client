@@ -17,7 +17,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 
-public class AutoScaffolding extends Module {
+public class AutoFrame extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Double> range = sgGeneral.add(new DoubleSetting.Builder()
@@ -38,22 +38,27 @@ public class AutoScaffolding extends Module {
 
     private final Setting<Boolean> doubles = sgGeneral.add(new BoolSetting.Builder()
         .name("doubles")
-        .description("Places scaffoldings in the target's upper hitbox as well as the lower hitbox.")
+        .description("Places Item Frames in the target's upper hitbox as well as the lower hitbox.")
         .defaultValue(true)
         .build()
     );
 
     private final Setting<Boolean> rotate = sgGeneral.add(new BoolSetting.Builder()
         .name("rotate")
-        .description("Rotates towards the scaffoldings when placing.")
+        .description("Rotates towards the Item Frames when placing.")
         .defaultValue(true)
         .build()
     );
-
+    private final Setting<Boolean> allowGrowItemFrame = sgGeneral.add(new BoolSetting.Builder()
+       .name("Glow Item Frame")
+       .description("Allows placing with glow item frame.")
+       .defaultValue(false)
+       .build()
+    );
     private PlayerEntity target = null;
 
-    public AutoScaffolding() {
-        super(Categories.Combat, "auto-scaffolding", "Automatically places scaffoldings on other players to block their phase. ^w^.");
+    public AutoFrame() {
+        super(Categories.Combat, "auto-frame", "Automatically places Item Frames on other players to block their phase. ^w^.");
     }
 
     @EventHandler
@@ -63,10 +68,18 @@ public class AutoScaffolding extends Module {
             if (TargetUtils.isBadTarget(target, range.get())) return;
         }
 
-        BlockUtils.place(target.getBlockPos(), InvUtils.findInHotbar(Items.SCAFFOLDING), rotate.get(), 0, false);
+        if (allowGrowItemFrame.get()) {
+            BlockUtils.place(target.getBlockPos(), InvUtils.findInHotbar(Items.ITEM_FRAME), rotate.get(), 0, false);
+        }
+        if (!allowGrowItemFrame.get()) {
+            BlockUtils.place(target.getBlockPos(), InvUtils.findInHotbar(Items.GLOW_ITEM_FRAME), rotate.get(), 0, false);
+        }
 
-        if (doubles.get()) {
-            BlockUtils.place(target.getBlockPos().add(0, 1, 0), InvUtils.findInHotbar(Items.SCAFFOLDING), rotate.get(), 0, false);
+        if (doubles.get() && allowGrowItemFrame.get()) {
+            BlockUtils.place(target.getBlockPos().add(0, 1, 0), InvUtils.findInHotbar(Items.ITEM_FRAME), rotate.get(), 0, false);
+        }
+        if (doubles.get() && !allowGrowItemFrame.get()) {
+            BlockUtils.place(target.getBlockPos().add(0, 1, 0), InvUtils.findInHotbar(Items.GLOW_ITEM_FRAME), rotate.get(), 0, false);
         }
     }
 }

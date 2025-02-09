@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom" version "1.7-SNAPSHOT"
+    id "fabric-loom" version "1.9-SNAPSHOT"
     id "maven-publish"
     id "com.github.johnrengelman.shadow" version "8.1.1"
 }
@@ -11,6 +11,9 @@ base {
 }
 
 repositories {
+    flatDir {
+        dirs 'libs'
+    }
     maven {
         name = "meteor-maven"
         url = "https://maven.meteordev.org/releases"
@@ -57,9 +60,9 @@ dependencies {
 
     // Compat fixes
     modCompileOnly fabricApi.module("fabric-renderer-indigo", project.fapi_version)
-    modCompileOnly("maven.modrinth:sodium:${project.sodium_version}") { transitive = false }
-    modCompileOnly("maven.modrinth:lithium:${project.lithium_version}") { transitive = false }
-    modCompileOnly("maven.modrinth:iris:${project.iris_version}") { transitive = false }
+    modCompileOnly("sodium:${project.sodium_version}") { transitive = false }
+    modCompileOnly("lithium:${project.lithium_version}") { transitive = false }
+    modCompileOnly("iris:${project.iris_version}") { transitive = false }
     modCompileOnly("de.florianmichael:ViaFabricPlus:${project.viafabricplus_version}") { transitive = false }
 
     // Baritone (https://github.com/MeteorDevelopment/baritone)
